@@ -1,0 +1,37 @@
+# scripts/blockchain_analysis.py
+
+import pandas as pd
+import matplotlib.pyplot as plt
+
+def analyze_blockchain_data(df):
+    """
+    Analyze blockchain data to extract insights and visualize trends.
+
+    :param df: DataFrame with blockchain data (e.g., blocks, transactions)
+    :return: DataFrame with analysis results
+    """
+    df['timestamp'] = pd.to_datetime(df['timestamp'])
+    df.set_index('timestamp', inplace=True)
+    
+    # Example: Calculate average block time
+    df['block_time'] = df.index.to_series().diff().dt.total_seconds()
+    avg_block_time = df['block_time'].mean()
+    
+    # Example: Plot transactions over time
+    plt.figure(figsize=(12, 6))
+    df['transaction_count'].resample('D').sum().plot()
+    plt.xlabel('Date')
+    plt.ylabel('Number of Transactions')
+    plt.title('Daily Transaction Count')
+    plt.show()
+    
+    analysis_results = {
+        'average_block_time': avg_block_time
+    }
+    results_df = pd.DataFrame([analysis_results])
+    return results_df
+
+# Example usage:
+# df = pd.read_csv('blockchain_data.csv')
+# results_df = analyze_blockchain_data(df)
+# print(f'Analysis Results: {results_df}')
